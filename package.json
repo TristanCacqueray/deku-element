@@ -1,0 +1,13 @@
+{
+  "name": "deku-element",
+  "version": "0.0.0",
+  "scripts": {
+    "postinstall": "spago install && spago build",
+    "dev": "vite dev",
+    "build": "spago build && vite build"
+  },
+  "browserslist": "defaults, not ie <= 11",
+  "devDependencies": {
+    "vite": "^5.4.1"
+  }
+}
