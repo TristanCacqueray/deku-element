@@ -62,11 +62,14 @@ snapPos { size, dim } { x, y } = case (onIntersection && xDist < radius && yDist
   cellSize' = toNumber cellSize
   radius = round (cellSize' * 0.4)
 
-  xCoord = round (toNumber x / cellSize')
-  xDist = abs (x - xCoord * cellSize)
+  xCoord = round (toNumber xP / cellSize')
+  xDist = abs (xP - xCoord * cellSize)
+  xP = x - padding
 
-  yCoord = round (toNumber y / cellSize')
-  yDist = abs (y - yCoord * cellSize)
+  yCoord = round (toNumber yP / cellSize')
+  yDist = abs (yP - yCoord * cellSize)
+  yP = y - padding
+  padding = (dim - (cellSize * (size + 1))) `div` 2
 
 drawGrid :: { size :: Int, dim :: Int, canvas :: Element } -> Effect Unit
 drawGrid { size, dim, canvas } = do
@@ -85,6 +88,7 @@ drawGrid { size, dim, canvas } = do
     Canvas.fillPath ctx $ Canvas.rect ctx { x: 0.0, y: 0.0, width: dim', height: dim' }
 
     let cellSize = dim `div` (size + 1)
+    let padding = (dim - (cellSize * (size + 1))) `div` 2
 
     -- Grid
     Canvas.setStrokeStyle ctx "lightblue"
@@ -92,11 +96,11 @@ drawGrid { size, dim, canvas } = do
     for_ (range 0 (size - 1)) \n -> do
       Canvas.strokePath ctx $ do
         let
-          startPos = toNumber $ cellSize * (n + 1)
-          endPos = toNumber $ cellSize * size
-        Canvas.moveTo ctx startPos (toNumber cellSize)
+          startPos = toNumber $ padding + cellSize * (n + 1)
+          endPos = toNumber $ padding + cellSize * size
+        Canvas.moveTo ctx startPos (toNumber $ padding + cellSize)
         Canvas.lineTo ctx startPos endPos
-        Canvas.moveTo ctx (toNumber cellSize) startPos
+        Canvas.moveTo ctx (toNumber $ padding + cellSize) startPos
         Canvas.lineTo ctx endPos startPos
         Canvas.closePath ctx
 
