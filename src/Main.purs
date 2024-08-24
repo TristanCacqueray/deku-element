@@ -2,32 +2,20 @@ module Main where
 
 import Prelude
 
-import Data.Array (head)
-import Data.Foldable (for_)
-import Data.Int (round)
-import Data.Tuple.Nested ((/\))
-import Deku.Core (useHot)
-import Deku.DOM as D
-import Deku.DOM.Self as Self
-import Deku.Do as Deku
-import Deku.Toplevel (runInBody)
-import DekuGrid (grid)
+import Data.Maybe (Maybe(..))
+import Deku.Toplevel (runInBody, runInElement)
+import DekuWeiqi (weiqi)
 import Effect (Effect)
-import Web.ResizeObserver (ResizeObserverBoxOptions(..), observe, resizeObserver)
+import Effect.Console (log)
+import Web.DOM.Document (toNonElementParentNode)
+import Web.DOM.NonElementParentNode (getElementById)
+import Web.HTML (window)
+import Web.HTML.HTMLDocument (toDocument)
+import Web.HTML.Window (document)
 
 main :: Effect Unit
-main = void $ runInBody $ Deku.do
-  _setSize /\ size <- useHot 19
-  setDim /\ dimension <- useHot 888
-  D.div
-    [ Self.self_ \e -> do
-        observer <- resizeObserver \entries _oberserver -> do
-          for_ (head entries) \entry -> do
-            let rect = entry.contentRect
-            setDim $ round (min rect.width rect.height)
-            pure unit
-        observe e { box: BorderBox } observer
-
-    ]
-    [ grid { size, dimension }
-    ]
+main = do
+  mElt <- window >>= document >>= getElementById "weiqi" <<< toNonElementParentNode <<< toDocument
+  case mElt of
+    Nothing -> log "No weiqi element :/"
+    Just elt -> void $ runInElement elt weiqi
