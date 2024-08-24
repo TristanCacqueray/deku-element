@@ -3,6 +3,7 @@ workspace:
     deku-element:
       path: ./
       dependencies:
+        - canvas
         - console
         - deku-core
         - deku-dom
@@ -13,10 +14,12 @@ workspace:
       test_dependencies: []
       build_plan:
         - aff
+        - arraybuffer-types
         - arrays
         - assert
         - avar
         - bifunctors
+        - canvas
         - catenable-lists
         - console
         - const
@@ -706,6 +709,11 @@ packages:
       - tailrec
       - transformers
       - unsafe-coerce
+  arraybuffer-types:
+    type: registry
+    version: 3.0.2
+    integrity: sha256-mQKokysYVkooS4uXbO+yovmV/s8b138Ws3zQvOwIHRA=
+    dependencies: []
   arrays:
     type: registry
     version: 7.3.0
@@ -754,6 +762,16 @@ packages:
       - newtype
       - prelude
       - tuples
+  canvas:
+    type: registry
+    version: 6.0.0
+    integrity: sha256-Y4L0bTJu4budLhb24ImGUb3s0qvcgja2lPhRDhHRlys=
+    dependencies:
+      - arraybuffer-types
+      - effect
+      - exceptions
+      - functions
+      - maybe
   catenable-lists:
     type: registry
     version: 7.0.0

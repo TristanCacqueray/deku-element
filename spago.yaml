@@ -1,6 +1,7 @@
 package:
   name: deku-element
   dependencies:
+    - canvas
     - console
     - deku-core
     - deku-dom
