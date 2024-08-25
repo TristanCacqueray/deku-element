@@ -4,12 +4,13 @@ import Prelude
 
 import Data.Array (range)
 import Data.Foldable (for_)
-import Data.Int (quot, rem, round, toNumber)
+import Data.Int (round, toNumber)
 import Data.Maybe (Maybe(..))
 import Data.Ord (abs)
 import Data.Tuple.Nested ((/\))
 import Deku.Attribute (Attribute)
-import Deku.Core (Nut, text, useSkimmed, useState, useState')
+import Deku.Control (text_)
+import Deku.Core (Nut, useSkimmed, useState, useState')
 import Deku.DOM as D
 import Deku.DOM.Attributes as DA
 import Deku.DOM.Listeners as DL
@@ -108,8 +109,8 @@ drawGrid { size, dim, canvas } = do
     -- TODO: draw star points
     pure unit
 
-grid :: { size :: Poll Int, dimension :: Poll Int } -> Nut
-grid { size, dimension } = Deku.do
+grid :: { size :: Poll Int, dimension :: Poll Int, setMouse :: (Maybe Vertex -> Effect Unit) } -> Nut
+grid { size, dimension, setMouse } = Deku.do
   -- Store the canvas context
   setCanvas /\ canvas <- useState'
 
@@ -118,23 +119,19 @@ grid { size, dimension } = Deku.do
   let updateGrid = animate info drawGrid
 
   -- Store the mouse position for hover animation
-  setMouse /\ mouse <- useState Nothing
+  -- setMouse /\ mouse <- useState Nothing
 
-  D.div [ DA.style_ "display: grid" ]
-    [ D.span__ "deku-grid"
-    , D.canvas
-        [ Self.self_ \elt -> do
-            -- Q: is this like component mount event?
-            -- Q: do we need to unsubscribe the animation poll?
-            void $ updateGrid
-            launchAff_ do
-              delay (Milliseconds 0.0)
-              liftEffect do
-                log "Setting canvas"
-                setCanvas elt
-        , DA.style_ "border-color:pink; border-style:dashed;"
-        , coordOn DL.mousemove $ info <#> \i -> (setMouse <<< snapPos i)
-        ]
-        []
-    , text $ mouse <#> \m -> ("Mouse pos: " <> show m)
+  D.canvas
+    [ Self.self_ \elt -> do
+        -- Q: is this like component mount event?
+        -- Q: do we need to unsubscribe the animation poll?
+        void $ updateGrid
+        launchAff_ do
+          delay (Milliseconds 0.0)
+          liftEffect do
+            log "Setting canvas"
+            setCanvas elt
+    , coordOn DL.mousemove $ info <#> \i -> (setMouse <<< snapPos i)
+    , DA.style_ "display: grid"
     ]
+    [ text_ "Canvas not available, update your browser!" ]

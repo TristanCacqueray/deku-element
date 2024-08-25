@@ -13,25 +13,26 @@
     <style>
       html,
       body {
-        margin: 0;
         height: 100%;
-        overflow: hidden;
-        overflow-x: hidden;
-        overflow-y: hidden;
-      }
-      body {
         touch-action: manipulation;
         display: flex;
         flex-direction: column;
       }
+      header, footer {
+        border-color: pink;
+        border-style: dashed;
+      }
       div#weiqi {
-        flex-grow: 1
+        flex-grow: 1;
       }
     </style>
   <body>
-  <div>
-  <p>banner</p>
+  <header>
+    banner
+  </header>
   <div id="weiqi"></div>
-  </div>
+  <footer>
+    bot
+  </footer>
  </body>
 </html>
