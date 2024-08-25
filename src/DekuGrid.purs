@@ -9,7 +9,7 @@ import Data.Maybe (Maybe(..))
 import Data.Ord (abs)
 import Data.Tuple.Nested ((/\))
 import Deku.Attribute (Attribute)
-import Deku.Core (Nut, text, useRant, useState, useState')
+import Deku.Core (Nut, text, useSkimmed, useState, useState')
 import Deku.DOM as D
 import Deku.DOM.Attributes as DA
 import Deku.DOM.Listeners as DL
@@ -114,7 +114,7 @@ grid { size, dimension } = Deku.do
   setCanvas /\ canvas <- useState'
 
   -- Combine the grid size, dimention and context for rendering purpose
-  info <- useRant ({ size: _, dim: _, canvas: _ } <$> size <*> dimension <*> canvas)
+  info <- useSkimmed ({ size: _, dim: _, canvas: _ } <$> size <*> dimension <*> canvas)
   let updateGrid = animate info drawGrid
 
   -- Store the mouse position for hover animation
