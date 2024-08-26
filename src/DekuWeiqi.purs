@@ -2,22 +2,26 @@ module DekuWeiqi where
 
 import Prelude
 
+import Control.Monad.ST.Class (liftST)
 import Data.Array (head)
 import Data.Foldable (for_)
 import Data.Int (floor)
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
 import Data.Tuple.Nested ((/\))
-import Deku.Core (Nut, text, useHot, useState)
+import Deku.Core (Nut, useHot, useState)
 import Deku.DOM as D
 import Deku.DOM.Attributes as DA
 import Deku.DOM.Self as Self
 import Deku.Do as Deku
 import DekuGrid (grid)
+import Effect (Effect)
 import Effect.Aff (Milliseconds(..), delay, launchAff_)
 import Effect.Class (liftEffect)
-import FRP.Event (filterMap, mapAccum)
-import FRP.Poll (Poll)
+import Effect.Console (log)
+import FRP.Event (EventIO, filterMap, mapAccum)
+import FRP.Event as E
+import FRP.Poll (Poll, sham)
 import Web.ResizeObserver (ResizeObserverBoxOptions(..), observe, resizeObserver)
 
 -- | Remove events that repeat the last value
@@ -31,9 +35,19 @@ discardRepeated = filterMap isDiff <<< mapAccum keepPrev Nothing
     | otherwise = Nothing
   keepPrev prev new = Tuple (Just new) (Tuple prev new)
 
-weiqi :: Nut
-weiqi = Deku.do
-  _setSize /\ size <- useHot 9
+type Wires =
+  { size :: EventIO Int
+  }
+
+initializeWires :: Effect Wires
+initializeWires = do
+  size <- liftST $ E.create
+  pure { size }
+
+weiqi :: Wires -> Nut
+weiqi wires = Deku.do
+  let size = sham wires.size.event
+  -- _setSize /\ size <- useHot 9
   setDim /\ dimension <- useHot 888
 
   -- Store the mouse position for hover animation

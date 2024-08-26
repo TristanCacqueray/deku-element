@@ -22,17 +22,28 @@
         border-color: pink;
         border-style: dashed;
       }
-      div#weiqi {
+      deku-weiqi {
         flex-grow: 1;
       }
     </style>
   <body>
   <header>
     banner
+    <select onchange="onSizeChange(this)">
+      <option>9</option>
+      <option selected>19</option>
+    </select>
   </header>
-  <div id="weiqi"></div>
+  <deku-weiqi id="weiqi"></deku-weiqi>
   <footer>
     bot
   </footer>
+    <script>
+      const weiqi = document.getElementById("weiqi")
+      function onSizeChange(ev) {
+          // console.log("size changed!", ev.value)
+          weiqi.setAttribute("size", ev.value)
+      }
+    </script>
  </body>
 </html>

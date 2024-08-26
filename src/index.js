@@ -1,2 +1,2 @@
-import { main } from "../output/Main/index.js";
-main();
+import { defineWeiqiComponent } from "../output/Main/index.js";
+defineWeiqiComponent();
